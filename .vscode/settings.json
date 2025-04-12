@@ -7,5 +7,6 @@
     "CODEOWNERS": "plaintext",
     "esp_zb_main.h": "c",
     "gpio.h": "c"
-  }
+  },
+  "idf.portWin": "COM5"
 }
