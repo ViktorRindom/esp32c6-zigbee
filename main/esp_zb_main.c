@@ -8,6 +8,8 @@
 #include "driver/gpio.h"
 #include "esp_zb_main.h"
 
+#define buildtin_button GPIO_NUM_9
+
 static const char *TAG = "DEMO";
 
 // zcl strings start with their size
@@ -37,9 +39,10 @@ void button_task(void *pvParameters)
     uint8_t last_state = 0;
     while (1)
     {
-        uint8_t button_state = gpio_get_level(GPIO_NUM_12);
+        uint8_t button_state = gpio_get_level(buildtin_button);
         if (button_state != last_state)
         {
+            // report the button state to the coordinator
             ESP_LOGI(TAG, "Button changed: %d", button_state);
             last_state = button_state;
             reportAttribute(HA_BUTTON_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_BINARY_INPUT, ESP_ZB_ZCL_ATTR_BINARY_INPUT_PRESENT_VALUE_ID, &button_state);
@@ -238,7 +241,9 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_zb_platform_config(&config));
 
     // 2- ins & outs init
-    gpio_set_direction(GPIO_NUM_12, GPIO_MODE_INPUT);
+    gpio_set_direction(buildtin_button, GPIO_MODE_INPUT);
+
+
     light_driver_init(LIGHT_DEFAULT_OFF);
 
     // 3- zigbee task
